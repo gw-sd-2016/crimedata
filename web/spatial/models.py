@@ -6,7 +6,7 @@ class CrimeType(models.Model):
     friendly_name = models.CharField(null=False, blank=False, max_length=240)
     severity = models.IntegerField(default=5, null=False, blank=False)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.friendly_name
 
 
