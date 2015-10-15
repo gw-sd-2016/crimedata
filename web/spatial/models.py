@@ -23,3 +23,9 @@ class Incident(gis_models.Model):
         self.lon = self.point.x
 
         super(Incident, self).save(*args, **kwargs)
+
+    def __str__(self):
+        if self.narrative is None:
+            return "%s @ %s" % (self.incident_type, self.date_time)
+        else:
+            return self.narrative

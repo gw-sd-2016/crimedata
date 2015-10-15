@@ -7,6 +7,8 @@ from spatial.models import CrimeType, Incident
 
 
 class IncidentAdminOverride(gis_admin.OSMGeoAdmin):
+    default_lon = -77.049619
+    default_lat = 38.899141
     readonly_fields = ('lat', 'lon')
 
 
