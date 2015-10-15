@@ -1,14 +1,13 @@
 from django.db import models
 from django.contrib.gis.db import models as gis_models
 
-# Create your models here.
+
 class CrimeType(models.Model):
     friendly_name = models.CharField(null=False, blank=False, max_length=240)
     severity = models.IntegerField(default=5, null=False, blank=False)
 
     def __unicode__(self):
         return self.friendly_name
-
 
 
 class Incident(gis_models.Model):
