@@ -28,4 +28,4 @@ class Incident(gis_models.Model):
         if self.narrative is None:
             return "%s @ %s" % (self.incident_type, self.date_time)
         else:
-            return self.narrative
+            return "%s - %s" % (self.incident_type, self.narrative)

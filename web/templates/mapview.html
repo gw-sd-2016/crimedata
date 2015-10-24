@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Mapping Interface</title>
+    
+     <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.5/leaflet.css" />
+     <script src="http://cdn.leafletjs.com/leaflet-0.7.5/leaflet.js"></script>
+</head>
+<body>
+    <div id="dsource" style="width: 100%; background-color: darkred; color: white; text-align: center;">
+        Data Source: sd
+    </div>
+    <br />
+    <div id="mapctr" style="width: 800px; height: 800px; border: 1px solid black;">
+
+    </div>
+
+    <script type="text/javascript">
+        var map = L.map("mapctr").setView([38.89915, -77.04579], 13);
+
+        L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
+            attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
+            maxZoom: 18,
+            id: 'mapbox.streets',
+            accessToken: 'pk.eyJ1IjoiYmVuY2d3dSIsImEiOiJjaWc1aWxjc2E0M2VjdW5tM3VydHEwd3Z3In0.JoYWcs6lrfnP-wHIUvTRAA'
+        }).addTo(map);
+    </script>
+</body>
+</html>
