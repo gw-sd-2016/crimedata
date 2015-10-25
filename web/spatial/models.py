@@ -29,3 +29,7 @@ class Incident(gis_models.Model):
             return "%s @ %s" % (self.incident_type, self.date_time)
         else:
             return "%s - %s" % (self.incident_type, self.narrative)
+
+    @property
+    def marker_title(self):
+        return self.__str__()

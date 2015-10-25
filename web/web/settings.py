@@ -32,6 +32,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = (
     'spatial',
+    'leaflet',
 
     'django.contrib.admin',
     'django.contrib.auth',
@@ -104,6 +105,14 @@ USE_L10N = True
 
 USE_TZ = True
 
+LEAFLET_CONFIG = {
+    'DEFAULT_CENTER': (38.899258, -77.047108),
+    'DEFAULT_ZOOM': 16,
+    'MAX_ZOOM': 19,
+    'MIN_ZOOM': 12,
+    'ATTRIBUTION_PREFIX':
+        "CSSD16 | Connected to Database: %s" % DATABASES['default']['NAME']
+}
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/

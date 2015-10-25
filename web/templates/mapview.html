@@ -4,8 +4,9 @@
     <meta charset="UTF-8">
     <title>Mapping Interface</title>
     
-     <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.5/leaflet.css" />
-     <script src="http://cdn.leafletjs.com/leaflet-0.7.5/leaflet.js"></script>
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.5/leaflet.css" />
+    <script src="http://cdn.leafletjs.com/leaflet-0.7.5/leaflet.js"></script>
+    <script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
 </head>
 <body>
     <div id="dsource" style="width: 100%; background-color: darkred; color: white; text-align: center;">
@@ -17,7 +18,7 @@
     </div>
 
     <script type="text/javascript">
-        var map = L.map("mapctr").setView([38.89915, -77.04579], 13);
+        var map = L.map("mapctr").setView([38.89915, -77.04579], 16);
 
         L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
             attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',

@@ -17,9 +17,19 @@ from django.conf.urls import include, url
 from django.contrib import admin
 
 # admin.autodiscover()
-from spatial import views
+from spatial import views, models as s_models
+from djgeojson.views import GeoJSONLayerView
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^map$', views.mapview)
+    url(r'^map$', views.mapview),
+    url(r'^map2$', views.mapview2),
+
+    url(r'^all_datapoints.js$',
+        GeoJSONLayerView.as_view(
+            model=s_models.Incident,
+            properties=('marker_title', 'point',),
+            geometry_field='point',
+        ),
+        name='all_datapoints_geojson'),
 ]

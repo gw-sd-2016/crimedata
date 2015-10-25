@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+{% load leaflet_tags %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+
+    {% leaflet_js %}
+    {% leaflet_css %}
+
+    <script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
+
+    <style type="text/css">
+        .leaflet-container {height: 800px; }
+    </style>
+</head>
+<body>
+    {% leaflet_map "main" callback="main_map_init" %}
+
+    <script type="text/javascript">
+        function setTitle(feature, layer) {
+            layer.bindPopup(feature.properties.marker_title);
+        }
+
+        function main_map_init(map, options) {
+            var data_url = "{% url "all_datapoints_geojson" %}";
+
+            $.getJSON(data_url, function(data) {
+                L.geoJson(data, {onEachFeature: setTitle}).addTo(map);
+            });
+        }
+    </script>
+</body>
+</html>
