@@ -25,7 +25,7 @@ class Incident(gis_models.Model):
         super(Incident, self).save(*args, **kwargs)
 
     def __str__(self):
-        if self.narrative is None:
+        if self.narrative is None or self.narrative.strip() == "":
             return "%s @ %s" % (self.incident_type, self.date_time)
         else:
             return "%s - %s" % (self.incident_type, self.narrative)
