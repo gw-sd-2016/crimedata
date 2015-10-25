@@ -111,7 +111,7 @@ LEAFLET_CONFIG = {
     'MAX_ZOOM': 19,
     'MIN_ZOOM': 12,
     'ATTRIBUTION_PREFIX':
-        "CSSD16 | Connected to Database: %s" % DATABASES['default']['NAME']
+        "CSSD16 | Active Database: %s" % DATABASES['default']['NAME']
 }
 
 # Static files (CSS, JavaScript, Images)

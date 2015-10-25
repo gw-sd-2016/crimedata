@@ -18,18 +18,18 @@ from django.contrib import admin
 
 # admin.autodiscover()
 from spatial import views, models as s_models
-from djgeojson.views import GeoJSONLayerView
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^map$', views.mapview),
     url(r'^map2$', views.mapview2),
 
-    url(r'^all_datapoints.js$',
-        GeoJSONLayerView.as_view(
+    # CBV to encode "crimes-by-type" list into GeoJSON for consumption by mapping UI
+    url(r'^crime_type_layer.geojson$',
+        views.IncidentTypeMapLayer.as_view(
             model=s_models.Incident,
             properties=('marker_title', 'point',),
             geometry_field='point',
         ),
-        name='all_datapoints_geojson'),
+        name='crime_type_layer_gjson'),
 ]

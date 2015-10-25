@@ -19,15 +19,39 @@
 
     <script type="text/javascript">
         function setTitle(feature, layer) {
+            {# Callback function to set the title text/tooltip on markers #}
             layer.bindPopup(feature.properties.marker_title);
         }
 
         function main_map_init(map, options) {
-            var data_url = "{% url "all_datapoints_geojson" %}";
+            {# GeoJSON endpoint to get crime pins by type #}
+            var lg_data_url = "{% url "crime_type_layer_gjson" %}";
 
-            $.getJSON(data_url, function(data) {
-                L.geoJson(data, {onEachFeature: setTitle}).addTo(map);
-            });
+            {# Container for incident type overlay layers #}
+            var overlays = {};
+
+            {% for k,v in layer_groups.items %}
+                {#  * Create new layer #}
+                // ***** Begin Layer Group {{ k }} -> {{ v.display_name }} ******
+                var layer_group_{{ k }} = new L.LayerGroup();
+
+                {#  * Define the GeoJSON endpoint for this crime type #}
+                $.getJSON(lg_data_url + "?ctid={{ k }}", function(data) {
+                    L.geoJson(data, {onEachFeature: setTitle}).addTo(layer_group_{{ k }});
+                });
+
+                {#  * Add the layer to the overlays collection #}
+                overlays['{{ v.display_name }}'] = layer_group_{{ k }};
+
+                {#  * Add the layer to the map, so it is displayed by default #}
+                map.addLayer(layer_group_{{ k }});
+                // ***** End Layer Group {{ k }} *****
+
+            {% endfor %}
+
+            {# Add the layer selector to the map. #}
+            {# Only allow toggle of crime type-based overlays, not the base map #}
+            L.control.layers(null, overlays).addTo(map);
         }
     </script>
 </body>

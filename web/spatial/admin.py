@@ -7,11 +7,16 @@ from spatial.models import CrimeType, Incident
 # This will allow for basic validation during model design
 
 
-class IncidentAdminOverride(gis_admin.OSMGeoAdmin):
-    default_lon = -77.049619
-    default_lat = 38.899141
-    readonly_fields = ('lat', 'lon')
+# class IncidentAdminOverride(gis_admin.OSMGeoAdmin):
+#     default_lon = -77.049619
+#     default_lat = 38.899141
+#     readonly_fields = ('lat', 'lon')
 
 
-admin.site.register(CrimeType)
+class CrimeTypeAdminOverride(admin.ModelAdmin):
+    list_display = ('friendly_name', 'severity')
+    ordering = ['severity']
+
+
+admin.site.register(CrimeType, CrimeTypeAdminOverride)
 admin.site.register(Incident, LeafletGeoAdmin)
