@@ -1,3 +1,7 @@
+web/web/local_settings.py
+app/.idea/
+web/web/__pycache__/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
