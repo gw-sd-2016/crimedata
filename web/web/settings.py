@@ -33,6 +33,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = (
     'spatial',
     'leaflet',
+    'batch',
 
     'django.contrib.admin',
     'django.contrib.auth',
@@ -118,3 +119,16 @@ LEAFLET_CONFIG = {
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
 STATIC_URL = '/static/'
+
+# # These values are overwritten by local_settings.py per-environment. # #
+# # local_settings.py is not tracked in the VCS to prevent API key     # #
+# # from being publicly-available because the git repo is public       # #
+GOOGLE_GEOCODE = {
+    'API_KEY': None,
+    'API_URL': None,
+}
+
+try:
+    from web.local_settings import *
+except ImportError:
+    pass
