@@ -11,12 +11,20 @@ class CrimeType(models.Model):
 
 
 class Incident(gis_models.Model):
+    SOURCE_CHOICES = (
+        ("ADM", "Admin UI"),
+        ("ARM", "GWPD ARMS"),
+        ("CHI", "Chicago OpenData"),
+        ("ZZZ", "Other"),
+    )
+
     incident_type = gis_models.ForeignKey(CrimeType, null=True, on_delete=gis_models.SET_NULL)
     date_time = gis_models.DateTimeField(null=False, blank=False)
     point = gis_models.PointField()
     lat = gis_models.DecimalField(max_digits=10, decimal_places=6)
     lon = gis_models.DecimalField(max_digits=10, decimal_places=6)
     narrative = gis_models.CharField(null=True, blank=True, max_length=1024)
+    import_source = models.CharField(max_length=3, choices=SOURCE_CHOICES, default="ADM")
 
     def save(self, *args, **kwargs):
         self.lat = self.point.y
