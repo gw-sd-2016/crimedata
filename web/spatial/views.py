@@ -33,12 +33,16 @@ class IncidentTypeMapLayer(GeoJSONLayerView):
         crime_type_id = self.request.GET.get('ctid')
         bound_nw_lat = self.request.GET.get('nw_lat')
         bound_nw_lng = self.request.GET.get('nw_lng')
-        bound_se_lat = self.request.GET.get('se_lng')
-        bound_se_lng = self.request.GET.get('se_lon')
+        bound_se_lat = self.request.GET.get('se_lat')
+        bound_se_lng = self.request.GET.get('se_lng')
         zoom_level = self.request.GET.get('zoom')
 
-
-
-        return self.model.objects.filter(
-            incident_type__pk=crime_type_id
+        Q = self.model.objects.filter(
+            incident_type__pk=crime_type_id,
+            lat__gte=float(bound_se_lat),
+            lat__lte=float(bound_nw_lat),
+            lon__gte=float(bound_nw_lng),
+            lon__lte=float(bound_se_lng),
         )
+
+        return Q

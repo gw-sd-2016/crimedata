@@ -52,9 +52,9 @@
                 var query_str = "?ctid={{ k }}" +
                         "&zoom=" + map.getZoom() +
                         "&nw_lat=" + bounds.getNorthWest().lat +
-                        "&nw_lon=" + bounds.getNorthWest().lng +
+                        "&nw_lng=" + bounds.getNorthWest().lng +
                         "&se_lat=" + bounds.getSouthEast().lat +
-                        "&se_lon=" + bounds.getSouthEast().lng;
+                        "&se_lng=" + bounds.getSouthEast().lng;
                 $.getJSON(lg_data_url + query_str, function(data) {
                     L.geoJson(data, {onEachFeature: setTitle}).addTo(layer_group_{{ k }});
                 });
@@ -81,7 +81,11 @@
 
             map.on('zoomend', function() {
                 update_map_layers(map);
-            })
+            });
+
+            map.on('moveend', function() {
+                update_map_layers(map);
+            });
 
             update_map_layers(map);
         }
