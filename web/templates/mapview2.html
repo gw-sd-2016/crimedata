@@ -30,6 +30,10 @@
             {# Container for incident type overlay layers #}
             var overlays = {};
 
+            map.on('moveend', function() {
+                document.getElementById("mpos").innerHTML = map.getBounds();
+            });
+
             {% for k,v in layer_groups.items %}
                 {#  * Create new layer #}
                 // ***** Begin Layer Group {{ k }} -> {{ v.display_name }} ******
@@ -54,5 +58,7 @@
             L.control.layers(null, overlays).addTo(map);
         }
     </script>
+
+<div id="mpos"></div>
 </body>
 </html>

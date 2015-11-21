@@ -12,7 +12,7 @@ class ChicagoImporter(ImporterBase):
     def __init__(self):
         self.set_source_code("CHI")
 
-    def load_data(self):
+    def load_data(self, *args, **kwargs):
         # 11/07/2015 11:52:00 PM
         chicago_datetime_re = '(?P<month>\d+)/(?P<day>\d+)/(?P<year>\d+) (?P<hour>\d+)\:(?P<min>\d+)\:(?P<sec>\d+) (?P<tz>.+)'
         dt_parse = re.compile(chicago_datetime_re)
@@ -20,12 +20,15 @@ class ChicagoImporter(ImporterBase):
         with open(SOURCE_FILE, newline='') as CSV:
             crimereader = csv.reader(CSV, delimiter=",", quotechar='"')
             next(crimereader)  # Throw away headers
-            i = 0
+
+            max_rows = int(kwargs["max_rows"]) if kwargs["max_rows"] is not None else -1
+            i = max_rows
+            import_count = 0
+
             for row in crimereader:
-                # if i > 100:
-                #     break
-                # # print(', '.join(row))
-                # i += 1
+                if i == 0:
+                    break
+
                 raw_date_time = row[2]
                 parsed_time = dt_parse.match(raw_date_time)
                 # print("Got -> %s " % (parsed_time.group("sec")))
@@ -47,13 +50,19 @@ class ChicagoImporter(ImporterBase):
 
                 if lat != 0 and lon != 0:
                     self.insert_record(type, date_time, lat, lon, narrative)
+                    i -= 1
+                    import_count += 1
+
+            print(self.__module__ + "." + self.__class__.__name__ +
+                  ": imported " + str(import_count) + " records")
 
 
 class TestChicago(object):
-    def __init__(self):
+    def __init__(self, max_rows=None):
         for i in Incident.objects.filter(import_source="CHI"):
             i.delete()
+
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
             C = ChicagoImporter()
-            C.load_data()
+            C.load_data(max_rows=max_rows)
