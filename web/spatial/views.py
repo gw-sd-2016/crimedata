@@ -31,4 +31,14 @@ class IncidentTypeMapLayer(GeoJSONLayerView):
     # Override queryset generator in GeoJSON CBV to allow filtering on query
     def get_queryset(self):
         crime_type_id = self.request.GET.get('ctid')
-        return self.model.objects.filter(incident_type__pk=crime_type_id)
+        bound_nw_lat = self.request.GET.get('nw_lat')
+        bound_nw_lng = self.request.GET.get('nw_lng')
+        bound_se_lat = self.request.GET.get('se_lng')
+        bound_se_lng = self.request.GET.get('se_lon')
+        zoom_level = self.request.GET.get('zoom')
+
+
+
+        return self.model.objects.filter(
+            incident_type__pk=crime_type_id
+        )

@@ -18,21 +18,29 @@
     {% leaflet_map "main" callback="main_map_init" %}
 
     <script type="text/javascript">
+        var g_layerControl = null;
+
         function setTitle(feature, layer) {
             {# Callback function to set the title text/tooltip on markers #}
             layer.bindPopup(feature.properties.marker_title);
         }
 
-        function main_map_init(map, options) {
+        function update_map_layers(map) {
+            map.eachLayer(function(layer) {
+                if(!(layer instanceof L.TileLayer)) {
+                    map.removeLayer(layer);
+                }
+            });
+
+            if(g_layerControl != null) {
+                map.removeControl(g_layerControl);
+            }
+
             {# GeoJSON endpoint to get crime pins by type #}
             var lg_data_url = "{% url "crime_type_layer_gjson" %}";
 
             {# Container for incident type overlay layers #}
             var overlays = {};
-
-            map.on('moveend', function() {
-                document.getElementById("mpos").innerHTML = map.getBounds();
-            });
 
             {% for k,v in layer_groups.items %}
                 {#  * Create new layer #}
@@ -40,7 +48,14 @@
                 var layer_group_{{ k }} = new L.LayerGroup();
 
                 {#  * Define the GeoJSON endpoint for this crime type #}
-                $.getJSON(lg_data_url + "?ctid={{ k }}", function(data) {
+                var bounds = map.getBounds();
+                var query_str = "?ctid={{ k }}" +
+                        "&zoom=" + map.getZoom() +
+                        "&nw_lat=" + bounds.getNorthWest().lat +
+                        "&nw_lon=" + bounds.getNorthWest().lng +
+                        "&se_lat=" + bounds.getSouthEast().lat +
+                        "&se_lon=" + bounds.getSouthEast().lng;
+                $.getJSON(lg_data_url + query_str, function(data) {
                     L.geoJson(data, {onEachFeature: setTitle}).addTo(layer_group_{{ k }});
                 });
 
@@ -50,15 +65,28 @@
                 {#  * Add the layer to the map, so it is displayed by default #}
                 map.addLayer(layer_group_{{ k }});
                 // ***** End Layer Group {{ k }} *****
-
             {% endfor %}
 
             {# Add the layer selector to the map. #}
             {# Only allow toggle of crime type-based overlays, not the base map #}
-            L.control.layers(null, overlays).addTo(map);
+            g_layerControl = L.control.layers(null, overlays);
+            g_layerControl.addTo(map);
+        }
+
+        function main_map_init(map, options) {
+            map.on('moveend', function() {
+                document.getElementById("mpos").innerHTML = "NW: " + map.getBounds().getNorthWest() + " <br />" +
+                        "SE: " + map.getBounds().getSouthEast();
+            });
+
+            map.on('zoomend', function() {
+                update_map_layers(map);
+            })
+
+            update_map_layers(map);
         }
     </script>
 
-<div id="mpos"></div>
+<div id="mpos">Position NW SE</div>
 </body>
 </html>
