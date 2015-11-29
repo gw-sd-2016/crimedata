@@ -43,6 +43,6 @@ class IncidentTypeMapLayer(GeoJSONLayerView):
             lat__lte=float(bound_nw_lat),
             lon__gte=float(bound_nw_lng),
             lon__lte=float(bound_se_lng),
-        )
+        )[:1500]  # TODO: fix - Temporarily limit max result to 1500
 
         return Q
