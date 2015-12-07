@@ -1,3 +1,4 @@
+{% load staticfiles %}
 <!DOCTYPE html>
 {% load leaflet_tags %}
 <html lang="en">
@@ -9,6 +10,9 @@
     {% leaflet_css %}
 
     <script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
+    <script src="{% static "wicket.js" %}"></script>
+    <script src="{% static "wicket-leaflet.js" %}"></script>
+
 
     <style type="text/css">
         .leaflet-container {height: 800px; }
@@ -36,11 +40,30 @@
                 map.removeControl(g_layerControl);
             }
 
-            {# GeoJSON endpoint to get crime pins by type #}
-            var lg_data_url = "{% url "crime_type_layer_gjson" %}";
-
             {# Container for incident type overlay layers #}
             var overlays = {};
+
+            {# Temp - Import subdivisons directly #}
+            {# TODO: Refactor this to use AJAX and pay attention to the bounding box #}
+            var subdivs = [
+                {% for S in subdivisons %}
+                    ["{{ S.polygon.wkt }}", "{{ S }}"],
+                {% endfor %}
+            ];
+            var subdivLayer = new L.LayerGroup();
+            $.each(subdivs, function(key, val) {
+                var wkt = new Wkt.Wkt();
+                wkt.read(val[0]);
+                // console.log("Got " + val[0]);
+                var subdiv = wkt.toObject();
+                subdivLayer.addLayer(subdiv);
+            });
+            map.addLayer(subdivLayer);
+            overlays['Subdivisons'] = subdivLayer;
+            {# End Subdivisions #}
+
+            {# GeoJSON endpoint to get crime pins by type #}
+            var lg_data_url = "{% url "crime_type_layer_gjson" %}";
 
             {% for k,v in layer_groups.items %}
                 {#  * Create new layer #}
@@ -88,6 +111,10 @@
             });
 
             update_map_layers(map);
+
+
+
+
         }
     </script>
 

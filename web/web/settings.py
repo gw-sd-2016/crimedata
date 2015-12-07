@@ -107,11 +107,13 @@ USE_L10N = True
 USE_TZ = True
 
 LEAFLET_CONFIG = {
-    # 'DEFAULT_CENTER': (38.899258, -77.047108),
-    'DEFAULT_CENTER': (41.878114, -87.629798),
-    'DEFAULT_ZOOM': 16,
+    # WDC 'DEFAULT_CENTER': (38.899258, -77.047108),
+    # CHI 'DEFAULT_CENTER': (41.878114, -87.629798),
+    # STL 'DEFAULT_CENTER': (38.627003, -90.199404),
+    'DEFAULT_CENTER': (38.627003, -90.199404),
+    'DEFAULT_ZOOM': 7,
     'MAX_ZOOM': 19,
-    'MIN_ZOOM': 12,
+    'MIN_ZOOM': 1,
     'ATTRIBUTION_PREFIX':
         "CSSD16 | Active Database: %s" % DATABASES['default']['NAME']
 }
@@ -120,6 +122,9 @@ LEAFLET_CONFIG = {
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
 STATIC_URL = '/static/'
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, "static"),
+)
 
 # # These values are overwritten by local_settings.py per-environment. # #
 # # local_settings.py is not tracked in the VCS to prevent API key     # #

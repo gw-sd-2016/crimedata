@@ -41,3 +41,13 @@ class Incident(gis_models.Model):
     @property
     def marker_title(self):
         return self.__str__()
+
+
+class Subdivision(gis_models.Model):
+    polygon = gis_models.PolygonField()
+    display_name = gis_models.CharField(max_length=255)
+    objects = gis_models.GeoManager()
+    src_file_index = gis_models.IntegerField(null=True, blank=True)
+
+    def __str__(self):
+        return "Subdivision: %s" % self.display_name

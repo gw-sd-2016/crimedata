@@ -2,7 +2,7 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.utils.http import urlencode
 from djgeojson.views import GeoJSONLayerView
-from spatial.models import CrimeType
+from spatial.models import CrimeType, Subdivision
 from django.contrib.gis.geos import *
 from django.contrib.gis.measure import D
 
@@ -23,6 +23,8 @@ def mapview2(request):
             "color": "red",
             "db_id": str(crime_type.pk),
         }
+
+    subdivisons = Subdivision.objects.all()
 
     return render_to_response("mapview2.html", locals(), context_instance=RequestContext(request))
 

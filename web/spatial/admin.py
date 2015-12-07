@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.gis import admin as gis_admin
 from leaflet.admin import LeafletGeoAdmin
-from spatial.models import CrimeType, Incident
+from spatial.models import CrimeType, Incident, Subdivision
 
 # (Very simple) default associations of the models to the builtin Admin Site
 # This will allow for basic validation during model design
@@ -18,3 +18,4 @@ class CrimeTypeAdminOverride(admin.ModelAdmin):
 
 admin.site.register(CrimeType, CrimeTypeAdminOverride)
 admin.site.register(Incident, IncidentAdminOverride)
+admin.site.register(Subdivision)
