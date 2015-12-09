@@ -1,7 +1,8 @@
 import math
 # Autocorrelation and associated helper functions
 # Formula used in new_lat/new_lon from here: http://gis.stackexchange.com/a/2980
-from models import Incident
+from spatial.models import Incident
+import subprocess
 
 R = 6378137 # Radius of the Earth
 
@@ -46,3 +47,14 @@ def get_crimes_in_square(nw_lat, nw_lon, se_lat, se_lon):
             lon__gte=float(nw_lon),
             lon__lte=float(se_lon),
     )
+
+
+def stl_process():
+    py_file = "/home/ben/sd/web/batch/ops/autocorr/offline/__init__.py"
+    py_cmd = "python2 %s" % py_file
+
+    autocorr_output = subprocess.getoutput(py_cmd)
+    autocorr_obj_indexes = autocorr_output.split(",")
+    autocorr_obj_indexes = [int(i) for i in autocorr_obj_indexes]
+
+    return autocorr_obj_indexes

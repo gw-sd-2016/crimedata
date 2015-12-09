@@ -6,6 +6,9 @@ from spatial.models import CrimeType, Subdivision
 from django.contrib.gis.geos import *
 from django.contrib.gis.measure import D
 
+## temp ##
+from batch.ops.autocorr import stl_process
+
 
 def mapview(request):
     return render_to_response("mapview.html", locals(), context_instance=RequestContext(request))
@@ -24,6 +27,8 @@ def mapview2(request):
             "db_id": str(crime_type.pk),
         }
 
+    active_subdivisions = stl_process()
+    print(active_subdivisions)
     subdivisons = Subdivision.objects.all()
 
     return render_to_response("mapview2.html", locals(), context_instance=RequestContext(request))
