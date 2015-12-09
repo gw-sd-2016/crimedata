@@ -47,7 +47,7 @@
             {# TODO: Refactor this to use AJAX and pay attention to the bounding box #}
             var subdivs = {};
             {% for S in subdivisons %}
-                subdivs.k{{ S.src_file_index }} = "{{ S.polygon.wkt }}";
+                subdivs.k{{ S.src_file_index }} = ["{{ S.display_name }}", "{{ S.polygon.wkt }}"];
             {% endfor %}
 
             var highlight_subdivs = [];
@@ -58,14 +58,15 @@
             var subdivLayer = new L.LayerGroup();
             $.each(subdivs, function(key, val) {
                 var wkt = new Wkt.Wkt();
-                wkt.read(val);
+                wkt.read(val[1]);
                 // console.log("Got " + val[0]);
                 var subdiv = wkt.toObject();
 
                 if(highlight_subdivs.indexOf(key) > -1) {
-                    subdiv.options.color = "#00FF00";
+                    subdiv.options.color = "#FF0000";
                 }
 
+                subdiv.bindPopup(val[0]);
                 subdivLayer.addLayer(subdiv);
             });
             map.addLayer(subdivLayer);
