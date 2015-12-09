@@ -19,7 +19,7 @@ def autocorrelate():
 			sig_vals.append(idx)
 		idx += 1
 
-	print(local_moran.p_sim)
-	print(sig_vals)
+	#print(local_moran.p_sim)
+	print(",".join(str(p) for p in sig_vals))
 
 autocorrelate()
