@@ -34,6 +34,10 @@ def mapview2(request):
     return render_to_response("mapview2.html", locals(), context_instance=RequestContext(request))
 
 
+def subdivs(request):
+    return render_to_response("subdivs.html", locals(), context_instance=RequestContext(request))
+
+
 class IncidentTypeMapLayer(GeoJSONLayerView):
     # Override queryset generator in GeoJSON CBV to allow filtering on query
     def get_queryset(self):
