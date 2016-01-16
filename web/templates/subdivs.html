@@ -1,0 +1,67 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+{% load leaflet_tags %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+
+    {% leaflet_js %}
+    {% leaflet_css %}
+
+    <script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
+    <script src="{% static "wicket.js" %}"></script>
+    <script src="{% static "wicket-leaflet.js" %}"></script>
+
+    <script src="{% static "ldraw/leaflet.draw.js" %}"></script>
+    <link rel="stylesheet" type="text/css" href="{% static "ldraw/leaflet.draw.css" %}" />
+
+    <style type="text/css">
+        .leaflet-container {height: 800px; }
+    </style>
+</head>
+<body>
+    <h1>Subdivision Administrator</h1>
+    {% leaflet_map "main" callback="main_map_init" %}
+
+    <script type="text/javascript">
+        var g_layerControl = null;
+
+        function setTitle(feature, layer) {
+            {# Callback function to set the title text/tooltip on markers #}
+            layer.bindPopup(feature.properties.marker_title);
+        }
+
+        function process_polys(lg) {
+            for(var i=0; i<lg.length; i++) {
+                current_poly = lg[i];
+                alert(current_poly);
+            }
+
+        }
+
+        function main_map_init(map, options) {
+            map.on('moveend', function() {
+                document.getElementById("mpos").innerHTML = "NW: " + map.getBounds().getNorthWest() + " <br />" +
+                        "SE: " + map.getBounds().getSouthEast();
+            });
+
+            var drawnItems = L.featureGroup().addTo(map);
+            map.addControl(new L.Control.Draw({
+                edit: { featureGroup: drawnItems }
+            }));
+
+            map.on('draw:created', function(evt) {
+                drawnItems.addLayer(evt.layer);
+            });
+
+            map.on('draw:editstop', function(evt) {
+                process_polys(drawnItems);
+            });
+
+        }
+    </script>
+
+<div id="mpos">Position NW SE</div>
+</body>
+</html>
