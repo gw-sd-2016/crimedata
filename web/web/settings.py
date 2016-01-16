@@ -126,6 +126,9 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, "static"),
 )
 
+# Base path for temporary files
+TMP_BASE = "/tmp/"
+
 # # These values are overwritten by local_settings.py per-environment. # #
 # # local_settings.py is not tracked in the VCS to prevent API key     # #
 # # from being publicly-available because the git repo is public       # #

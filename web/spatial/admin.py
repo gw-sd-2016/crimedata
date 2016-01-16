@@ -10,6 +10,8 @@ from spatial.models import CrimeType, Incident, Subdivision
 class IncidentAdminOverride(LeafletGeoAdmin):
     readonly_fields = ('lat', 'lon')
 
+class SubdivisionAdminOverride(LeafletGeoAdmin):
+    pass
 
 class CrimeTypeAdminOverride(admin.ModelAdmin):
     list_display = ('friendly_name', 'severity')
@@ -18,4 +20,4 @@ class CrimeTypeAdminOverride(admin.ModelAdmin):
 
 admin.site.register(CrimeType, CrimeTypeAdminOverride)
 admin.site.register(Incident, IncidentAdminOverride)
-admin.site.register(Subdivision)
+admin.site.register(Subdivision, SubdivisionAdminOverride)
