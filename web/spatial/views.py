@@ -29,7 +29,7 @@ def mapview2(request):
 
     active_subdivisions = stl_process()
     print(active_subdivisions)
-    subdivisons = Subdivision.objects.all()
+    subdivisons = Subdivision.objects.filter(display_name__icontains="County")
 
     return render_to_response("mapview2.html", locals(), context_instance=RequestContext(request))
 

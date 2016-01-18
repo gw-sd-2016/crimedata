@@ -59,11 +59,17 @@
             $.each(subdivs, function(key, val) {
                 var wkt = new Wkt.Wkt();
                 wkt.read(val[1]);
-                // console.log("Got " + val[0]);
-                var subdiv = wkt.toObject();
+                console.log("Got " + val[0]);
 
+                var subdiv = wkt.toObject(map.defaults);
                 if(highlight_subdivs.indexOf(key) > -1) {
-                    subdiv.options.color = "#FF0000";
+{#                    subdiv.options = new Object();#}
+{#                    subdiv.options.color = "#FF0000";#}
+                    subdiv = wkt.toObject(
+                            {
+                                color: '#ff0000'
+                            }
+                    );
                 }
 
                 subdiv.bindPopup(val[0]);

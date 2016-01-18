@@ -30,8 +30,9 @@ def generate_txt(crime_type, start_time, end_time):
     with open(file_path, "w", newline="") as csv_file:
         csvout = csv.writer(csv_file, delimiter=",", quotechar='"', quoting=csv.QUOTE_NONNUMERIC)
 
-        csvout.writerow([len(sorted_subdiv_counts), 4])
-        csvout.writerow(["IDX", "PK", "COUNT", "OVERTIME"])
+        header = ["IDX", "PK", "COUNT", "OVERTIME"]
+        csvout.writerow([len(sorted_subdiv_counts), len(header)])
+        csvout.writerow(header)
         for key, val in list(sorted_subdiv_counts.items()):
             csvout.writerow(
                 [
@@ -41,6 +42,7 @@ def generate_txt(crime_type, start_time, end_time):
                     -1
                 ]
             )
-            print("%s -> %s - %d" % (key, val['disp'], val['count']))
+            if settings.DEBUG:
+                print("%s -> %s - %d" % (key, val['disp'], val['count']))
 
     print("File written to %s" % file_path)

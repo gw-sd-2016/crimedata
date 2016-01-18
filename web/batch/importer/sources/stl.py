@@ -1,5 +1,7 @@
 from spatial.models import Subdivision
 import csv
+from shapely.geometry import Polygon as s_poly, MultiPolygon as s_mpoly
+from shapely import wkt as s_wkt
 
 
 def import_subdivisions():
@@ -11,6 +13,12 @@ def import_subdivisions():
             city_name = line["NAME"]
             state_name = line["STATE_NAME"]
             poly = line["WKT"]
+
+            F = s_wkt.loads(poly)
+            if type(F) is s_poly:
+                F = s_mpoly([F,])
+
+            poly = F.wkt
 
             Subdivision.objects.create(
                 polygon=poly,
