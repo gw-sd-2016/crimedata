@@ -53,7 +53,10 @@ def get_crimes_in_square(nw_lat, nw_lon, se_lat, se_lon):
 def stl_process():
     weights_path = generate_weights()
     py_file = "/home/ben/sd/web/batch/ops/autocorr/offline/__init__.py"
-    py_cmd = "python2 %s \"%s\"" % (py_file, weights_path)
+    csv_file = "/home/ben/sd/app/demo/stl/stl_hom.txt"
+    csv_col = "HR8893"
+
+    py_cmd = "python2 %s \"%s\" \"%s\" \"%s\"" % (py_file, weights_path, csv_file, csv_col)
 
     print("stl_process will call %s" % py_cmd)
 
