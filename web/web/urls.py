@@ -32,4 +32,12 @@ urlpatterns = [
             geometry_field='point',
         ),
         name='crime_type_layer_gjson'),
+
+    url(r'^subdiv_layer.geojson$',
+        views.SubdivisionMapLayer.as_view(
+            model=s_models.Subdivision,
+            properties=('display_name', 'src_file_index' 'polygon',),
+            geometry_field='polygon',
+        ),
+        name='subdivision_layer_gjson'),
 ]

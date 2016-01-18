@@ -29,7 +29,7 @@ def mapview2(request):
 
     active_subdivisions = stl_process()
     print(active_subdivisions)
-    subdivisons = Subdivision.objects.filter(display_name__icontains="County")
+    subdivisons = Subdivision.objects.all() #.filter(display_name__icontains="County")
 
     return render_to_response("mapview2.html", locals(), context_instance=RequestContext(request))
 
@@ -55,5 +55,40 @@ class IncidentTypeMapLayer(GeoJSONLayerView):
             lon__gte=float(bound_nw_lng),
             lon__lte=float(bound_se_lng),
         )[:1500]  # TODO: fix - Temporarily limit max result to 1500
+
+        return Q
+
+
+class SubdivisionMapLayer(GeoJSONLayerView):
+    # Override queryset generator in GeoJSON CBV to allow filtering on query
+    def get_queryset(self):
+        crime_type_id = self.request.GET.get('ctid')
+        bound_nw_lat = float(self.request.GET.get('nw_lat'))
+        bound_nw_lng = float(self.request.GET.get('nw_lng'))
+        P_nw = (bound_nw_lng, bound_nw_lat)
+
+        bound_se_lat = float(self.request.GET.get('se_lat'))
+        bound_se_lng = float(self.request.GET.get('se_lng'))
+        P_se = (bound_se_lng, bound_se_lat)
+
+        bound_ne_lat = bound_nw_lat
+        bound_ne_lng = bound_se_lng
+        P_ne = (bound_ne_lng, bound_ne_lat)
+
+        bound_sw_lat = bound_se_lat
+        bound_sw_lng = bound_nw_lng
+        P_sw = (bound_sw_lng, bound_sw_lat)
+
+        polyring = LinearRing(P_nw, P_ne, P_se, P_sw, P_nw)
+        bounding_polygon = Polygon(polyring)
+        print(bounding_polygon.wkt)
+        #print(polyring.wkt)
+
+        #print((P_nw, P_ne, P_se, P_sw, P_nw))
+
+
+        Q = self.model.objects.filter(
+            polygon__within=bounding_polygon
+        )
 
         return Q

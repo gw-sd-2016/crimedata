@@ -24,6 +24,15 @@
     <script type="text/javascript">
         var g_layerControl = null;
 
+        var highlight_subdivs = [];
+        {% for x in active_subdivisions %}
+        highlight_subdivs.push("k{{ x }}");
+        {% endfor %}
+
+        function setSubdivOptions(feature, layer) {
+
+        }
+
         function setTitle(feature, layer) {
             {# Callback function to set the title text/tooltip on markers #}
             layer.bindPopup(feature.properties.marker_title);
@@ -43,35 +52,21 @@
             {# Container for incident type overlay layers #}
             var overlays = {};
 
-            {# Temp - Import subdivisons directly #}
-            {# TODO: Refactor this to use AJAX and pay attention to the bounding box #}
-            var subdivs = {};
-            {% for S in subdivisons %}
-                subdivs.k{{ S.src_file_index }} = ["{{ S.display_name }}", "{{ S.polygon.wkt }}"];
-            {% endfor %}
-
-            var highlight_subdivs = [];
-            {% for x in active_subdivisions %}
-            highlight_subdivs.push("k{{ x }}");
-            {% endfor %}
-
+            {# ***** Begin Subdivisions Layer ***** #}
             var subdivLayer = new L.LayerGroup();
-            $.each(subdivs, function(key, val) {
-                var wkt = new Wkt.Wkt();
-                wkt.read(val[1]);
-                console.log("Got " + val[0]);
+            var sd_query_str =
+                        "?nw_lat=" + map.getBounds().getNorthWest().lat +
+                        "&nw_lng=" + map.getBounds().getNorthWest().lng +
+                        "&se_lat=" + map.getBounds().getSouthEast().lat +
+                        "&se_lng=" + map.getBounds().getSouthEast().lng;
+            var sd_data_url = "{% url "subdivision_layer_gjson" %}";
 
-                var subdiv = wkt.toObject();
-                if(highlight_subdivs.indexOf(key) > -1) {
-                    subdiv = wkt.toObject({ color: '#ff0000' });
-                }
-
-                subdiv.bindPopup(val[0]);
-                subdivLayer.addLayer(subdiv);
+            $.getJSON(sd_data_url + sd_query_str, function(data) {
+                L.geoJson(data, {onEachFeature: setSubdivOptions}).addTo(subdivLayer);
             });
             map.addLayer(subdivLayer);
-            overlays['Subdivisons'] = subdivLayer;
-            {# End Subdivisions #}
+            overlays['Subdivisions'] = subdivLayer;
+            {# ***** End Subdivisions Layer ***** #}
 
             {# GeoJSON endpoint to get crime pins by type #}
             var lg_data_url = "{% url "crime_type_layer_gjson" %}";
