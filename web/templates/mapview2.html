@@ -61,15 +61,9 @@
                 wkt.read(val[1]);
                 console.log("Got " + val[0]);
 
-                var subdiv = wkt.toObject(map.defaults);
+                var subdiv = wkt.toObject();
                 if(highlight_subdivs.indexOf(key) > -1) {
-{#                    subdiv.options = new Object();#}
-{#                    subdiv.options.color = "#FF0000";#}
-                    subdiv = wkt.toObject(
-                            {
-                                color: '#ff0000'
-                            }
-                    );
+                    subdiv = wkt.toObject({ color: '#ff0000' });
                 }
 
                 subdiv.bindPopup(val[0]);
