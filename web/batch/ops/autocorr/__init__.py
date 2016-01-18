@@ -3,6 +3,7 @@ import math
 # Formula used in new_lat/new_lon from here: http://gis.stackexchange.com/a/2980
 from spatial.models import Incident
 import subprocess
+from batch.ops.autocorr.dataproc.gengal import generate_weights
 
 R = 6378137 # Radius of the Earth
 
@@ -50,8 +51,11 @@ def get_crimes_in_square(nw_lat, nw_lon, se_lat, se_lon):
 
 
 def stl_process():
+    weights_path = generate_weights()
     py_file = "/home/ben/sd/web/batch/ops/autocorr/offline/__init__.py"
-    py_cmd = "python2 %s" % py_file
+    py_cmd = "python2 %s \"%s\"" % (py_file, weights_path)
+
+    print("stl_process will call %s" % py_cmd)
 
     autocorr_output = subprocess.getoutput(py_cmd)
     autocorr_obj_indexes = autocorr_output.split(",")
