@@ -26,12 +26,8 @@
 
         var highlight_subdivs = [];
         {% for x in active_subdivisions %}
-        highlight_subdivs.push("k{{ x }}");
+        highlight_subdivs.push({{ x }});
         {% endfor %}
-
-        function setSubdivOptions(feature, layer) {
-
-        }
 
         function setTitle(feature, layer) {
             {# Callback function to set the title text/tooltip on markers #}
@@ -62,7 +58,17 @@
             var sd_data_url = "{% url "subdivision_layer_gjson" %}";
 
             $.getJSON(sd_data_url + sd_query_str, function(data) {
-                L.geoJson(data, {onEachFeature: setSubdivOptions}).addTo(subdivLayer);
+                L.geoJson(data, {
+                        style: function(feature) {
+                            var is_significant = (highlight_subdivs.indexOf(feature.properties.src_file_index) > -1);
+                            var color = (is_significant) ? "#ff0000" : "#0096d6";
+
+                            return {"color": color};
+                        },
+                        onEachFeature: function(feature, layer) {
+                            layer.bindPopup(feature.properties.display_name);
+                        }
+                    }).addTo(subdivLayer);
             });
             map.addLayer(subdivLayer);
             overlays['Subdivisions'] = subdivLayer;

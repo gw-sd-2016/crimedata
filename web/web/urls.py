@@ -36,7 +36,7 @@ urlpatterns = [
     url(r'^subdiv_layer.geojson$',
         views.SubdivisionMapLayer.as_view(
             model=s_models.Subdivision,
-            properties=('display_name', 'src_file_index' 'polygon',),
+            properties=('display_name', 'src_file_index'),
             geometry_field='polygon',
         ),
         name='subdivision_layer_gjson'),
