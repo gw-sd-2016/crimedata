@@ -9,6 +9,7 @@ def generate_weights(sdiv_set=None):
 
     if sdiv_set is None:
         sdiv_set = Subdivision.objects.filter(src_file_index__lt=100)
+        #sdiv_set = Subdivision.objects.filter()
 
     # print("Got %d SDivs" % len(sdiv_set))
 
