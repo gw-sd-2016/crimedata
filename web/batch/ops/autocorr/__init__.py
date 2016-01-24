@@ -4,6 +4,7 @@ import math
 from spatial.models import Incident
 import subprocess
 from batch.ops.autocorr.dataproc.gengal import generate_weights
+from batch.ops.autocorr.dataproc.db2txt import generate_txt
 
 R = 6378137 # Radius of the Earth
 
@@ -50,11 +51,16 @@ def get_crimes_in_square(nw_lat, nw_lon, se_lat, se_lon):
     )
 
 
-def stl_process():
+def stl_process(start_date, end_date, ctid, demo=False):
     weights_path = generate_weights()
+    csv_file = generate_txt(ctid, start_date, end_date)
+
     py_file = "/home/ben/sd/web/batch/ops/autocorr/offline/__init__.py"
-    csv_file = "/home/ben/sd/app/demo/stl/stl_hom.txt"
-    csv_col = "HR8893"
+    csv_col = "OVERTIME"
+
+    if demo:
+        csv_file = "/home/ben/sd/app/demo/stl/stl_hom.txt"
+        csv_col = "HR8893"
 
     py_cmd = "python2 %s \"%s\" \"%s\" \"%s\"" % (py_file, weights_path, csv_file, csv_col)
 

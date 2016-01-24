@@ -123,13 +123,31 @@
             });
 
             update_map_layers(map);
-
-
-
-
         }
     </script>
 
-<div id="mpos">Position NW SE</div>
+    <div id="mpos">Position NW SE</div>
+    <hr />
+    <div id="dsel">
+        <form method="post">
+            {% csrf_token %}
+            <label for="start">Start Date:</label>
+            <input type="text" size="25" name="start" id="start" placeholder="YYYY-MM-DD" />
+
+            <label for="start">End Date:</label>
+            <input type="text" size="25" name="end" id="end" placeholder="YYYY-MM-DD" />
+
+            <br />
+            <label for="ctid">Crime Type:</label>
+            <select name="ctid" id="ctid">
+                {% for t in crime_types %}
+                    <option value="{{ t.pk }}">{{ t }}</option>
+                {% endfor %}
+            </select>
+
+            <br />
+            <input type="submit" value="Submit" />
+        </form>
+    </div>
 </body>
 </html>

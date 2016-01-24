@@ -27,8 +27,18 @@ def mapview2(request):
             "db_id": str(crime_type.pk),
         }
 
-    active_subdivisions = stl_process()
-    print(active_subdivisions)
+    start_date = request.POST.get("start")
+    end_date = request.POST.get("end")
+    ctid_select = request.POST.get("ctid")
+
+    if ctid_select is not None:
+        active_subdivisions = stl_process(start_date, end_date, ctid_select)
+    else:
+        active_subdivisions = ()
+    # print(active_subdivisions)
+    # print(start_date, end_date, ctid_select)
+    # print(request.POST)
+
     subdivisons = Subdivision.objects.all() #.filter(display_name__icontains="County")
 
     return render_to_response("mapview2.html", locals(), context_instance=RequestContext(request))

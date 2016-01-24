@@ -1,6 +1,6 @@
 # Helper functions for converting database data into temporary text files to run analysis
 from spatial.models import CrimeType, Incident, Subdivision
-from batch.ops.autocorr import get_crimes_in_square
+#from batch.ops.autocorr import get_crimes_in_square
 from collections import OrderedDict
 import csv
 import uuid
@@ -18,7 +18,12 @@ def generate_txt(crime_type, start_time, end_time):
     subdiv_counts = {}
 
     for sd in Subdivision.objects.all(): # type: Subdivision
-        sd_incs = Incident.objects.filter(point__contained=sd.polygon)
+        sd_incs = Incident.objects.filter(
+            point__contained=sd.polygon,
+            date_time__lte=end_time,
+            date_time__gte=start_time,
+            incident_type__pk=crime_type,
+        ) # type: list[Incident]
         subdiv_counts[sd.src_file_index] = {"idx": sd.src_file_index,
                                             "pk": sd.pk,
                                             "disp": sd.display_name,
@@ -26,7 +31,7 @@ def generate_txt(crime_type, start_time, end_time):
 
     sorted_subdiv_counts = OrderedDict(sorted(subdiv_counts.items(), key=lambda rec: rec[0]))
 
-    file_path = "%sautocorr_db2txt_%s.csv" % (settings.TMP_BASE, uuid.uuid4())
+    file_path = "%sautocorr_db2txt_%s.txt" % (settings.TMP_BASE, uuid.uuid4())
     with open(file_path, "w", newline="") as csv_file:
         csvout = csv.writer(csv_file, delimiter=",", quotechar='"', quoting=csv.QUOTE_NONNUMERIC)
 
@@ -43,6 +48,7 @@ def generate_txt(crime_type, start_time, end_time):
                 ]
             )
             if settings.DEBUG:
-                print("%s -> %s - %d" % (key, val['disp'], val['count']))
+                pass # print("%s -> %s - %d" % (key, val['disp'], val['count']))
 
     print("File written to %s" % file_path)
+    return file_path
