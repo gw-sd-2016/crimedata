@@ -51,3 +51,16 @@ class Subdivision(gis_models.Model):
 
     def __str__(self):
         return "Subdivision: %s" % self.display_name
+
+class LocationAliasSecondaryName(gis_models.Model):
+    location_alias = gis_models.ForeignKey("LocationAlias")
+    display_name = gis_models.CharField(max_length=255)
+
+class LocationAlias(gis_models.Model):
+    point = gis_models.PointField()
+    primary_display_name = gis_models.CharField(max_length=255)
+
+    @property
+    def all_names(self):
+        additional_names = [x.display_name for x in self.locationaliassecondaryname_set]
+        return [self.primary_display_name] + additional_names

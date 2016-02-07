@@ -137,6 +137,9 @@ GOOGLE_GEOCODE = {
     'API_URL': None,
 }
 
+# Override this in local_settings.py
+GWUPD_DATA_CSV_PATH = None
+
 try:
     from web.local_settings import *
 except ImportError:
