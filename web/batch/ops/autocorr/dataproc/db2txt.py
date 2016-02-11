@@ -44,7 +44,7 @@ def generate_txt(crime_type, start_time, end_time):
                     int(key),
                     int(val['pk']),
                     int(val['count']),
-                    -1
+                    0.1,
                 ]
             )
             if settings.DEBUG:

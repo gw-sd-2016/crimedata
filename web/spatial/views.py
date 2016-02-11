@@ -20,12 +20,12 @@ def mapview2(request):
     layer_groups = {}
     crime_types = CrimeType.objects.all()
 
-    for crime_type in crime_types:
-        layer_groups[crime_type.pk] = {
-            "display_name": crime_type.friendly_name,
-            "color": "red",
-            "db_id": str(crime_type.pk),
-        }
+    # for crime_type in crime_types:
+    #     layer_groups[crime_type.pk] = {
+    #         "display_name": crime_type.friendly_name,
+    #         "color": "red",
+    #         "db_id": str(crime_type.pk),
+    #     }
 
     start_date = request.POST.get("start")
     end_date = request.POST.get("end")
