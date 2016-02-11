@@ -35,6 +35,11 @@
         }
 
         function update_map_layers(map) {
+            document.getElementById("frm_nw_lat").value = map.getBounds().getNorthWest().lat;
+            document.getElementById("frm_nw_lng").value = map.getBounds().getNorthWest().lng;
+            document.getElementById("frm_se_lat").value = map.getBounds().getSouthEast().lat;
+            document.getElementById("frm_se_lng").value = map.getBounds().getSouthEast().lng;
+
             map.eachLayer(function (layer) {
                 if (!(layer instanceof L.TileLayer)) {
                     map.removeLayer(layer);
@@ -112,6 +117,7 @@
             map.on('moveend', function() {
                 document.getElementById("mpos").innerHTML = "NW: " + map.getBounds().getNorthWest() + " <br />" +
                         "SE: " + map.getBounds().getSouthEast();
+
             });
 
             map.on('zoomend', function() {
@@ -132,6 +138,11 @@
     <div id="dsel">
         <form method="post">
             {% csrf_token %}
+            <input type="hidden" name="nw_lat" id="frm_nw_lat" />
+            <input type="hidden" name="nw_lng" id="frm_nw_lng" />
+            <input type="hidden" name="se_lat" id="frm_se_lat" />
+            <input type="hidden" name="se_lng" id="frm_se_lng" />
+
             <label for="start">Start Date:</label>
             <input type="text" size="25" name="start" id="start" placeholder="YYYY-MM-DD" />
 

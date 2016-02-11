@@ -51,9 +51,10 @@ def get_crimes_in_square(nw_lat, nw_lon, se_lat, se_lon):
     )
 
 
-def stl_process(start_date, end_date, ctid, demo=False):
-    weights_path = generate_weights()
-    csv_file = generate_txt(ctid, start_date, end_date)
+def stl_process(sdiv_set, start_date, end_date, ctid, demo=False):
+    weights_path = generate_weights(sdiv_set)
+    print("stl_process: csv params: %s %s %s" % (start_date, end_date, ctid))
+    csv_file = generate_txt(sdiv_set, ctid, start_date, end_date)
 
     py_file = "/home/ben/sd/web/batch/ops/autocorr/offline/__init__.py"
     csv_col = "OVERTIME"

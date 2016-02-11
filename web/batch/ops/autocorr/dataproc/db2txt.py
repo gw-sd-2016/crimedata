@@ -7,7 +7,7 @@ import uuid
 from web import settings
 import random
 
-def generate_txt(crime_type, start_time, end_time):
+def generate_txt(sdiv_set, crime_type, start_time, end_time):
     """
     :type crime_type: CrimeType
     :param crime_type:
@@ -18,13 +18,16 @@ def generate_txt(crime_type, start_time, end_time):
 
     subdiv_counts = {}
 
-    for sd in Subdivision.objects.all(): # type: Subdivision
+    for sd in sdiv_set: # type: Subdivision
         sd_incs = Incident.objects.filter(
             point__contained=sd.polygon,
             date_time__lte=end_time,
             date_time__gte=start_time,
             incident_type__pk=crime_type,
         ) # type: list[Incident]
+        if len(sd_incs) > 0:
+            print("%s => %d" % (sd.display_name, len(sd_incs)))
+
         subdiv_counts[sd.src_file_index] = {"idx": sd.src_file_index,
                                             "pk": sd.pk,
                                             "disp": sd.display_name,
@@ -45,7 +48,7 @@ def generate_txt(crime_type, start_time, end_time):
                     int(key),
                     int(val['pk']),
                     int(val['count']),
-                    random.uniform(1, 2),
+                    int(val['count']),
                 ]
             )
             if settings.DEBUG:

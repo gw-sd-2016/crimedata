@@ -20,6 +20,9 @@ def autocorrelate(weights_path, csv_file, csv_col):
             row2id[int(idx)] = int(row['IDX'])
             idx += 1
 
+    # for k, v in row2id.iteritems():
+    #     print("%d => %d" % (k,v))
+    #
     raw_data = pysal.open(csv_file)
 
     y_data = numpy.array(raw_data.by_col[csv_col])

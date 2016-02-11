@@ -31,8 +31,35 @@ def mapview2(request):
     end_date = request.POST.get("end")
     ctid_select = request.POST.get("ctid")
 
+    if request.POST:
+        bound_nw_lat = float(request.POST.get('nw_lat'))
+        bound_nw_lng = float(request.POST.get('nw_lng'))
+        P_nw = (bound_nw_lng, bound_nw_lat)
+
+        bound_se_lat = float(request.POST.get('se_lat'))
+        bound_se_lng = float(request.POST.get('se_lng'))
+        P_se = (bound_se_lng, bound_se_lat)
+
+        bound_ne_lat = bound_nw_lat
+        bound_ne_lng = bound_se_lng
+        P_ne = (bound_ne_lng, bound_ne_lat)
+
+        bound_sw_lat = bound_se_lat
+        bound_sw_lng = bound_nw_lng
+        P_sw = (bound_sw_lng, bound_sw_lat)
+
+        polyring = LinearRing(P_nw, P_ne, P_se, P_sw, P_nw)
+        bounding_polygon = Polygon(polyring)
+        print(bounding_polygon.wkt)
+        #print(polyring.wkt)
+
+        sset = Subdivision.objects.filter(
+            polygon__within=bounding_polygon
+        )
+
+
     if ctid_select is not None:
-        active_subdivisions = stl_process(start_date, end_date, ctid_select)
+        active_subdivisions = stl_process(sset, start_date, end_date, ctid_select)
         #active_subdivisions = ()
     else:
         active_subdivisions = ()
