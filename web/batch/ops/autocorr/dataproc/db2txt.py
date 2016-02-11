@@ -5,6 +5,7 @@ from collections import OrderedDict
 import csv
 import uuid
 from web import settings
+import random
 
 def generate_txt(crime_type, start_time, end_time):
     """
@@ -44,7 +45,7 @@ def generate_txt(crime_type, start_time, end_time):
                     int(key),
                     int(val['pk']),
                     int(val['count']),
-                    0.1,
+                    random.uniform(1, 2),
                 ]
             )
             if settings.DEBUG:

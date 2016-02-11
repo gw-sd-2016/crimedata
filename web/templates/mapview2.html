@@ -66,7 +66,7 @@
                             return {"color": color};
                         },
                         onEachFeature: function(feature, layer) {
-                            layer.bindPopup(feature.properties.display_name);
+                            layer.bindPopup(feature.properties.display_name + " SFI:" + feature.properties.src_file_index);
                         }
                     }).addTo(subdivLayer);
             });

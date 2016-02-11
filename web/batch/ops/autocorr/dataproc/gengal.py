@@ -5,6 +5,7 @@ from spatial.models import Subdivision
 from web import settings
 from django.contrib.gis.measure import D
 
+
 def generate_weights(sdiv_set=None):
     PICKLE_VERSION = 2
 
@@ -15,11 +16,15 @@ def generate_weights(sdiv_set=None):
     # print("Got %d SDivs" % len(sdiv_set))
 
     neighbor_set = dict()
+    i = 0
     for subdiv in sdiv_set: # type: Subdivision
+        i += 1
         #subdiv_neighbors = Subdivision.objects.filter(polygon__touches=subdiv.polygon) # type: list[Subdivision]
         subdiv_neighbors = Subdivision.objects.filter(
-            polygon__centroid__distance_lte=(subdiv.polygon.centroid, D(mi=0.25))
-        )
+            poly_centroid__distance_lte=(subdiv.poly_centroid, D(mi=0.05))
+        ).distance(subdiv.poly_centroid).order_by('distance')
+
+        print("%d / %d => Neighbor set size %d" % (i, len(sdiv_set), len(subdiv_neighbors)))
         neighbor_set[subdiv.src_file_index] = [x.src_file_index for x in subdiv_neighbors]
 
     # print(neighbor_set)

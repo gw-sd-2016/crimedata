@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.gis.db import models as gis_models
-
+from django.contrib.gis.geos import GEOSGeometry
 
 class CrimeType(models.Model):
     friendly_name = models.CharField(null=False, blank=False, max_length=240)
@@ -48,6 +48,7 @@ class Subdivision(gis_models.Model):
     display_name = gis_models.CharField(max_length=255)
     objects = gis_models.GeoManager()
     src_file_index = gis_models.IntegerField(null=True, blank=True)
+    poly_centroid = gis_models.PointField()
 
     def __str__(self):
         return "Subdivision: %s" % self.display_name
