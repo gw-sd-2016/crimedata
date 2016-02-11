@@ -30,11 +30,14 @@ def import_squares():
         shapely_input = feature['geometry']
         F = shape(shapely_input)
 
-        if type(F) is s_poly:
-            F = s_mpoly([F,])
+        # if type(F) is s_poly:
+        #     F = s_mpoly([F,])
 
-        Subdivision.objects.create(
-            polygon = F.wkt,
-            display_name = "DC-%s" % feature['properties']['OBJECTID'],
-            src_file_index = feature['properties']['OBJECTID']
-        )
+        if type(F) is s_poly:
+            Subdivision.objects.create(
+                polygon = F.wkt,
+                display_name = "DC-%s" % feature['properties']['OBJECTID'],
+                src_file_index = feature['properties']['OBJECTID']
+            )
+        else:
+            print("Skip")

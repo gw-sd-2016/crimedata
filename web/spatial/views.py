@@ -33,6 +33,7 @@ def mapview2(request):
 
     if ctid_select is not None:
         active_subdivisions = stl_process(start_date, end_date, ctid_select)
+        #active_subdivisions = ()
     else:
         active_subdivisions = ()
     # print(active_subdivisions)

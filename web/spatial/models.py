@@ -44,7 +44,7 @@ class Incident(gis_models.Model):
 
 
 class Subdivision(gis_models.Model):
-    polygon = gis_models.MultiPolygonField()
+    polygon = gis_models.PolygonField()
     display_name = gis_models.CharField(max_length=255)
     objects = gis_models.GeoManager()
     src_file_index = gis_models.IntegerField(null=True, blank=True)
