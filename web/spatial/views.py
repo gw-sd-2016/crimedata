@@ -1,12 +1,12 @@
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.utils.http import urlencode
-from djgeojson.views import GeoJSONLayerView
-from spatial.models import CrimeType, Subdivision
 from django.contrib.gis.geos import *
 from django.contrib.gis.measure import D
+from djgeojson.views import GeoJSONLayerView
 
-## temp ##
+import datetime
+from spatial.models import CrimeType, Subdivision
 from batch.ops.autocorr import stl_process
 
 
@@ -30,6 +30,8 @@ def mapview2(request):
     start_date = request.POST.get("start")
     end_date = request.POST.get("end")
     ctid_select = request.POST.get("ctid")
+    sset = None
+    interval_indivisible = False
 
     if request.POST:
         bound_nw_lat = float(request.POST.get('nw_lat'))
@@ -59,6 +61,45 @@ def mapview2(request):
 
 
     if ctid_select is not None:
+        # Process spatial autocorrelation based on supplied arguments
+        interval = request.POST.get("interval")
+        date_groups = []
+        if interval is not None and interval != "":
+            '''
+            If the user did not supply an interval, this all is skipped and the
+            supplied params (start/end, inc. type) are passed directly to
+            stl_process (the spatial autocorrelation processor).
+
+            If the user DID supply an interval, that means that we want to split the
+            supplied date range by the interval and run the autocorrelation processor
+            on each interval. The results from each interval will then be displayed
+            sequentially on the map.
+                Example:
+                    Start date: 2015-05-19
+                    End date: 2015-05-25
+                    Interval: 1
+                    Crime type ID: 1
+
+                    This input would run the analysis for incidents of CTID=1
+                    for each day (interval=1) in the range, and then pass the results
+                    for each day into their own layer on the map. The map UI will then
+                    loop through each layer showing the change over time.
+            '''
+            try:
+                interval = int(request.POST.get("interval"))
+            except:
+                raise ValueError("Unable to cast interval to int")
+
+            dt_start_date = datetime.datetime.strptime(start_date, "%Y-%m-%d")
+            dt_end_date = datetime.datetime.strptime(end_date, "%Y-%m-%d")
+            date_range_delta = (dt_end_date - dt_start_date)      # type: datetime.timedelta
+            date_range_length = date_range_delta.days
+
+            if date_range_length % interval != 0:
+                interval_indivisible = True
+
+
+
         active_subdivisions = stl_process(sset, start_date, end_date, ctid_select)
         #active_subdivisions = ()
     else:
@@ -119,7 +160,7 @@ class SubdivisionMapLayer(GeoJSONLayerView):
 
         polyring = LinearRing(P_nw, P_ne, P_se, P_sw, P_nw)
         bounding_polygon = Polygon(polyring)
-        print(bounding_polygon.wkt)
+        #print(bounding_polygon.wkt)
         #print(polyring.wkt)
 
         #print((P_nw, P_ne, P_se, P_sw, P_nw))

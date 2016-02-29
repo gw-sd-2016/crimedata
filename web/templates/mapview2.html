@@ -4,7 +4,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title></title>
+    <title>Map View</title>
 
     {% leaflet_js %}
     {% leaflet_css %}
@@ -54,6 +54,7 @@
             var overlays = {};
 
             {# ***** Begin Subdivisions Layer ***** #}
+            {# This entire thing needs to loop for the time series. #}
             var subdivLayer = new L.LayerGroup();
             var sd_query_str =
                         "?nw_lat=" + map.getBounds().getNorthWest().lat +
@@ -133,6 +134,11 @@
         }
     </script>
 
+    {% if interval_indivisible %}
+        <script type="text/javascript">alert('The selected date range is not evenly divisible by the selected interval.' +
+                'The remainder period will not be included in the output.');</script>
+    {% endif %}
+
     <div id="mpos">Position NW SE</div>
     <hr />
     <div id="dsel">
@@ -143,22 +149,30 @@
             <input type="hidden" name="se_lat" id="frm_se_lat" />
             <input type="hidden" name="se_lng" id="frm_se_lng" />
 
-            <label for="start">Start Date:</label>
-            <input type="text" size="25" name="start" id="start" placeholder="YYYY-MM-DD" />
-
-            <label for="start">End Date:</label>
-            <input type="text" size="25" name="end" id="end" placeholder="YYYY-MM-DD" />
-
-            <br />
-            <label for="ctid">Crime Type:</label>
-            <select name="ctid" id="ctid">
-                {% for t in crime_types %}
-                    <option value="{{ t.pk }}">{{ t }}</option>
-                {% endfor %}
-            </select>
-
-            <br />
-            <input type="submit" value="Submit" />
+            <table style="width: 100%">
+                <tr style="width: 100%">
+                    <td>
+                        <label for="start">Start Date:</label>
+                        <input type="text" size="25" name="start" id="start" placeholder="YYYY-MM-DD" />
+                        <br />
+                        <label for="start">End Date:</label>
+                        <input type="text" size="25" name="end" id="end" placeholder="YYYY-MM-DD" />
+                        <br />
+                        <label for="interval">Interval</label>
+                        <input type="text" size="5" name="interval" id="interval" placeholder="Days" />
+                    </td>
+                    <td>
+                        <label for="ctid">Crime Type:</label>
+                        <select name="ctid" id="ctid">
+                            {% for t in crime_types %}
+                                <option value="{{ t.pk }}">{{ t }}</option>
+                            {% endfor %}
+                        </select>
+                        <br />
+                        <input type="submit" value="Submit" />
+                    </td>
+                </tr>
+            </table>
         </form>
     </div>
 </body>

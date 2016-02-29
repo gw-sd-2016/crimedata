@@ -25,7 +25,8 @@ def generate_weights(sdiv_set=None):
             poly_centroid__distance_lte=(subdiv.poly_centroid, D(mi=1))
         ).distance(subdiv.poly_centroid).order_by('distance')[:4]
 
-        print("%d / %d => Neighbor set size %d" % (i, len(sdiv_set), len(subdiv_neighbors)))
+        if len(subdiv_neighbors) < 4:
+            print("Warn: %d / %d => Neighbor set size %d, should be 4" % (i, len(sdiv_set), len(subdiv_neighbors)))
         neighbor_set[subdiv.src_file_index] = [x.src_file_index for x in subdiv_neighbors]
 
     # print(neighbor_set)
