@@ -34,6 +34,7 @@ def mapview2(request):
     sset = None
     interval_indivisible = False
     active_subdivisions = None
+    subdivision_date_ranges = None
 
     if request.POST:
         bound_nw_lat = float(request.POST.get('nw_lat'))
@@ -101,6 +102,7 @@ def mapview2(request):
                     interval_indivisible = True
 
                 active_subdivisions = []
+                subdivision_date_ranges = []
                 current_date = dt_start_date
                 while True:
                     current_end_date = current_date + datetime.timedelta(days=interval)
@@ -116,6 +118,8 @@ def mapview2(request):
                     print("\tSAC res mem = %s" % current_autocorr_result)
 
                     active_subdivisions.append(current_autocorr_result)
+                    subdivision_date_ranges.append("%s - %s" % (datetime.datetime.strftime(current_date, "%Y-%m-%d"),
+                                                                datetime.datetime.strftime(current_end_date.date(), "%Y-%m-%d")))
                     if current_end_date >= dt_end_date:
                         break
                     current_date = current_end_date
@@ -128,6 +132,7 @@ def mapview2(request):
 
     subdivisons = Subdivision.objects.all() #.filter(display_name__icontains="County")
     active_subdivisions = json.dumps(active_subdivisions)
+    print_date_ranges = json.dumps(subdivision_date_ranges)
 
     return render_to_response("mapview2.html", locals(), context_instance=RequestContext(request))
 

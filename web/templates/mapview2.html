@@ -24,6 +24,7 @@
     <script type="text/javascript">
         var g_layerControl = null;
         var g_layerList = [];
+        var g_layerDateRanges = {{ print_date_ranges|safe }};
 
         function setTitle(feature, layer) {
             {# Callback function to set the title text/tooltip on markers #}
@@ -65,7 +66,6 @@
             });
 
             var master_active_set = {{ active_subdivisions }};
-
             //console.log(master_sdiv_set);
             $.each(master_active_set, function(idx, highlight_subdivs) {
                 //console.log(highlight_subdivs);
@@ -126,11 +126,11 @@
         }
 
         function main_map_init(map, options) {
-            map.on('moveend', function() {
-                document.getElementById("mpos").innerHTML = "NW: " + map.getBounds().getNorthWest() + " <br />" +
-                        "SE: " + map.getBounds().getSouthEast();
-
-            });
+{#            map.on('moveend', function() {#}
+{#                document.getElementById("mpos").innerHTML = "NW: " + map.getBounds().getNorthWest() + " <br />" +#}
+{#                        "SE: " + map.getBounds().getSouthEast();#}
+{##}
+{#            });#}
 
             map.on('zoomend', function() {
                 update_map_layers(map);
@@ -144,13 +144,16 @@
             update_map_layers(map);
 
             $(g_layerList).each(function(idx, o) {
-                $("#layerctl").append("<a id=\"ctlLayer" + idx + "\" href=\"#\">Layer " + idx + "</a><br />");
+                $("#layerctl").append("<a id=\"ctlLayer" + idx + "\" href=\"#\">" + g_layerDateRanges[idx] + "</a>&nbsp;|&nbsp;");
             });
 
             $(g_layerList).each(function(idx, o) {
-                //var $this = this;
                 setTimeout(function() {
-                    if(idx != 0) { map.removeLayer(g_layerList[idx-1]); }
+                    if(idx != 0) {
+                        $("#ctlLayer" + (idx-1)).css("font-weight", "normal")
+                        map.removeLayer(g_layerList[idx-1]);
+                    }
+                    $("#ctlLayer" + idx).css("font-weight", "bold")
                     map.addLayer(o);
                 }, (idx + 1) * 500);
             });
@@ -162,7 +165,8 @@
                 'The remainder period will not be included in the output.');</script>
     {% endif %}
 
-    <div id="mpos">Position NW SE</div>
+    <div id="layerctl" style="text-align: center"></div>
+{#    <div id="mpos">Position NW SE</div>#}
     <hr />
     <div id="dsel">
         <form method="post">
@@ -198,7 +202,5 @@
             </table>
         </form>
     </div>
-
-    <div id="layerctl"></div>
 </body>
 </html>
