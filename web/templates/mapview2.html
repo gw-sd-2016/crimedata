@@ -150,10 +150,10 @@
             $(g_layerList).each(function(idx, o) {
                 setTimeout(function() {
                     if(idx != 0) {
-                        $("#ctlLayer" + (idx-1)).css("font-weight", "normal")
+                        $("#ctlLayer" + (idx-1)).css("font-weight", "normal");
                         map.removeLayer(g_layerList[idx-1]);
                     }
-                    $("#ctlLayer" + idx).css("font-weight", "bold")
+                    $("#ctlLayer" + idx).css("font-weight", "bold");
                     map.addLayer(o);
                 }, (idx + 1) * 500);
             });
