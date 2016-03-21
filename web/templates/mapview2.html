@@ -23,6 +23,7 @@
 
     <script type="text/javascript">
         var g_layerControl = null;
+        var g_layerList = [];
 
         function setTitle(feature, layer) {
             {# Callback function to set the title text/tooltip on markers #}
@@ -65,16 +66,16 @@
 
             var master_active_set = {{ active_subdivisions }};
 
-            console.log(master_sdiv_set);
+            //console.log(master_sdiv_set);
             $.each(master_active_set, function(idx, highlight_subdivs) {
-                console.log(highlight_subdivs);
+                //console.log(highlight_subdivs);
                 var subdivLayer = new L.LayerGroup();
 
                 L.geoJson(master_sdiv_set, {
                         style: function(feature) {
                             var is_significant = (highlight_subdivs.indexOf(feature.properties.src_file_index) > -1);
                             var color = (is_significant) ? "#ff0000" : "#0096d6";
-                            console.log("\t" + color);
+                            //console.log("\t" + color);
 
                             return {"color": color};
                         },
@@ -82,8 +83,10 @@
                             layer.bindPopup(feature.properties.display_name + " SFI:" + feature.properties.src_file_index);
                         }
                     }).addTo(subdivLayer);
-                map.addLayer(subdivLayer);
-                overlays['Subdivisions-' + idx] = subdivLayer;
+
+                g_layerList.push(subdivLayer);
+                // map.addLayer(subdivLayer);
+                // overlays['Subdivisions-' + idx] = subdivLayer;
             });
 
             {# ***** End Subdivisions Layer ***** #}
@@ -139,6 +142,18 @@
             });
 
             update_map_layers(map);
+
+            $(g_layerList).each(function(idx, o) {
+                $("#layerctl").append("<a id=\"ctlLayer" + idx + "\" href=\"#\">Layer " + idx + "</a><br />");
+            });
+
+            $(g_layerList).each(function(idx, o) {
+                //var $this = this;
+                setTimeout(function() {
+                    if(idx != 0) { map.removeLayer(g_layerList[idx-1]); }
+                    map.addLayer(o);
+                }, (idx + 1) * 500);
+            });
         }
     </script>
 
@@ -183,5 +198,7 @@
             </table>
         </form>
     </div>
+
+    <div id="layerctl"></div>
 </body>
 </html>
