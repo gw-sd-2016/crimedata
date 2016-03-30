@@ -125,6 +125,25 @@
             g_layerControl.addTo(map);
         }
 
+        function play_map(map) {
+            $(".mapHistItem").css("font-weight", "normal");
+
+            $(g_layerList).each(function(idx, o) {
+                map.removeLayer(o);
+            });
+
+            $(g_layerList).each(function(idx, o) {
+                setTimeout(function() {
+                    if(idx != 0) {
+                        $("#ctlLayer" + (idx-1)).css("font-weight", "normal");
+                        map.removeLayer(g_layerList[idx-1]);
+                    }
+                    $("#ctlLayer" + idx).css("font-weight", "bold");
+                    map.addLayer(o);
+                }, (idx + 1) * 750);
+            });
+        }
+
         function main_map_init(map, options) {
 {#            map.on('moveend', function() {#}
 {#                document.getElementById("mpos").innerHTML = "NW: " + map.getBounds().getNorthWest() + " <br />" +#}
@@ -144,19 +163,34 @@
             update_map_layers(map);
 
             $(g_layerList).each(function(idx, o) {
-                $("#layerctl").append("<a id=\"ctlLayer" + idx + "\" href=\"#\">" + g_layerDateRanges[idx] + "</a>&nbsp;|&nbsp;");
+                $("#layerctl").append("<a class=\"mapHistItem\" id=\"ctlLayer" + idx + "\" href=\"#\">" + g_layerDateRanges[idx] + "</a>&nbsp;|&nbsp;");
             });
 
-            $(g_layerList).each(function(idx, o) {
-                setTimeout(function() {
-                    if(idx != 0) {
-                        $("#ctlLayer" + (idx-1)).css("font-weight", "normal");
-                        map.removeLayer(g_layerList[idx-1]);
-                    }
-                    $("#ctlLayer" + idx).css("font-weight", "bold");
-                    map.addLayer(o);
-                }, (idx + 1) * 500);
+            $("#layerctl").append("<a id=\"replay\" href=\"#\">Replay</a>");
+
+            $(".mapHistItem").each(function(idx, o) {
+                $(this).click(function(evt) {
+                    //evt.target.id
+                    var idx = evt.target.id.toString().replace("ctlLayer", "");
+                    idx = parseInt(idx);
+
+                    $(g_layerList).each(function(idx, o) {
+                        map.removeLayer(o);
+                    });
+
+                    $(".mapHistItem").css("font-weight", "normal");
+                    $(evt.target).css("font-weight", "bold");
+
+                    map.addLayer(g_layerList[idx]);
+                })
             });
+
+            $("#replay").click(function() {
+
+               play_map(map);
+            });
+
+            play_map(map);
         }
     </script>
 
@@ -202,5 +236,10 @@
             </table>
         </form>
     </div>
+
+    <script type="text/javascript">
+
+    </script>
+
 </body>
 </html>

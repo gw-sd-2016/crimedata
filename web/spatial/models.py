@@ -5,6 +5,7 @@ from django.contrib.gis.geos import GEOSGeometry
 class CrimeType(models.Model):
     friendly_name = models.CharField(null=False, blank=False, max_length=240)
     severity = models.IntegerField(default=5, null=False, blank=False)
+    parent = models.ForeignKey("CrimeType", null=True, blank=True, related_name="child")
 
     def __str__(self):
         return self.friendly_name
