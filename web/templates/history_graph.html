@@ -13,7 +13,14 @@
         var options = {
             chart: {
                 title: "Crime Incidence Graph"
-            }
+            },
+            series: {
+                    0: {color: '#004065'},
+                    1: {color: '#c8b18b'},
+            },
+            hAxis: { title: 'Week, Starting' },
+            vAxis: { title: 'Crimes' },
+            height: 250,
         };
 
         var chart = new google.visualization.LineChart(document.getElementById("chart_div"));

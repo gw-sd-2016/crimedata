@@ -169,7 +169,7 @@ def mapview2(request):
                             incident_type__pk=ctid_select,
                         ).count(),
                         "crimes_total": Incident.objects.filter(
-                            point__contained=bounding_polygon,
+                            #point__contained=bounding_polygon,
                             date_time__lte=current_end,
                             date_time__gte=current_start,
                         ).count(),
