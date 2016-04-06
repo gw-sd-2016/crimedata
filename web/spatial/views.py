@@ -156,8 +156,8 @@ def mapview2(request):
                     current_start = chart_current_date
                     current_end = current_start + datetime.timedelta(days=chart_interval)
                     print("Chart -> %s - %s" % (current_start, current_end))
-                    if current_end > chart_end:
-                        current_end = chart_end
+                    # if current_end > chart_end:
+                    #     current_end = chart_end
 
                     chart_data.append({
                         "range_start": datetime.datetime.strftime(current_start, "%b %d"),
