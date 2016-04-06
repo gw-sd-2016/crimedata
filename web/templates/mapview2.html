@@ -13,7 +13,6 @@
     <script src="{% static "wicket.js" %}"></script>
     <script src="{% static "wicket-leaflet.js" %}"></script>
 
-
     <style type="text/css">
         .leaflet-container {height: 800px; }
     </style>
@@ -237,6 +236,21 @@
         </form>
     </div>
 
+    {% if is_result_view %}
+        <table style="width: 100%">
+            <tr>
+                <td style="width: 50%; vertical-align: top">
+                    <b>Crime Details</b>
+                    {% include "details_table.html" %}
+                </td>
+                <td style="width: 50%; vertical-align: top;">
+                    <b>History - 60 days before and after selected range</b>
+                    {% include "history_graph.html" %}
+                </td>
+            </tr>
+        </table>
+    {% endif %} 
+    
     <script type="text/javascript">
 
     </script>

@@ -1,0 +1,22 @@
+<div id="chart_div"></div>
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+    google.charts.load('current', {packages: ['corechart']});
+    google.charts.setOnLoadCallback(function() {
+        var data = new google.visualization.arrayToDataTable([
+            ["Period", "{{ ctid_name }}", "Total"],
+            {% for row in chart_data %}
+                ["{{ row.range_start }}", {{ row.crimes_in_type }}, {{ row.crimes_total }}],
+            {% endfor %}
+        ]);
+
+        var options = {
+            chart: {
+                title: "Crime Incidence Graph"
+            }
+        };
+
+        var chart = new google.visualization.LineChart(document.getElementById("chart_div"));
+        chart.draw(data, options);
+    });
+</script>

@@ -1,0 +1,22 @@
+<style>
+    .t-odd { background-color: #cccccc }
+</style>
+
+<table style="width: 100%; border-collapse: collapse; text-align: center">
+    <tr>
+        <th>Start</th>
+        <th>End</th>
+        <th>{{ ctid_name }}</th>
+        <th>Total Crimes</th>
+    </tr>
+
+    {% for row in table_data %}
+        {% cycle 't-odd' 't-even' as rowcolor silent %}
+        <tr class="{{ rowcolor }}">
+            <td>{{ row.range_start }}</td>
+            <td>{{ row.range_end }}</td>
+            <td>{{ row.crimes_in_type }}</td>
+            <td>{{ row.crimes_total }}</td>
+        </tr>
+    {% endfor %}
+</table>

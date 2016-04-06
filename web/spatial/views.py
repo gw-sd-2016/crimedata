@@ -7,7 +7,7 @@ from djgeojson.views import GeoJSONLayerView
 
 import datetime
 import json
-from spatial.models import CrimeType, Subdivision
+from spatial.models import CrimeType, Subdivision, Incident
 from batch.ops.autocorr import stl_process
 
 
@@ -31,12 +31,19 @@ def mapview2(request):
     start_date = request.POST.get("start")
     end_date = request.POST.get("end")
     ctid_select = request.POST.get("ctid")
+    ctid_name = ""
     sset = None
     interval_indivisible = False
     active_subdivisions = None
     subdivision_date_ranges = None
+    is_result_view = False
+    table_data = []
+    chart_data = []
 
     if request.POST:
+        is_result_view = True
+        ctid_name = CrimeType.objects.get(pk=ctid_select).friendly_name
+
         bound_nw_lat = float(request.POST.get('nw_lat'))
         bound_nw_lng = float(request.POST.get('nw_lng'))
         P_nw = (bound_nw_lng, bound_nw_lat)
@@ -120,9 +127,58 @@ def mapview2(request):
                     active_subdivisions.append(current_autocorr_result)
                     subdivision_date_ranges.append("%s - %s" % (datetime.datetime.strftime(current_date, "%Y-%m-%d"),
                                                                 datetime.datetime.strftime(current_end_date.date(), "%Y-%m-%d")))
+
+                    table_data.append({
+                        "range_start": datetime.datetime.strftime(current_date, "%Y-%m-%d"),
+                        "range_end": datetime.datetime.strftime(current_end_date.date(), "%Y-%m-%d"),
+                        "crimes_in_type": Incident.objects.filter(
+                            point__contained=bounding_polygon,
+                            date_time__lte=current_end_date,
+                            date_time__gte=current_date,
+                            incident_type__pk=ctid_select,
+                        ).count(),
+                        "crimes_total": Incident.objects.filter(
+                            # point__contained=bounding_polygon,
+                            date_time__lte=current_end_date,
+                            date_time__gte=current_date,
+                        ).count(),
+                    })
+
                     if current_end_date >= dt_end_date:
                         break
                     current_date = current_end_date
+
+                chart_start = dt_start_date + datetime.timedelta(-60)
+                chart_end = dt_end_date + datetime.timedelta(60)
+                chart_interval = 7
+                chart_current_date = chart_start
+                while True:
+                    current_start = chart_current_date
+                    current_end = current_start + datetime.timedelta(days=chart_interval)
+                    print("Chart -> %s - %s" % (current_start, current_end))
+                    if current_end > chart_end:
+                        current_end = chart_end
+
+                    chart_data.append({
+                        "range_start": datetime.datetime.strftime(current_start, "%b %d"),
+                        "range_end": datetime.datetime.strftime(current_end.date(), "%b %d"),
+                        "crimes_in_type": Incident.objects.filter(
+                            point__contained=bounding_polygon,
+                            date_time__lte=current_end,
+                            date_time__gte=current_start,
+                            incident_type__pk=ctid_select,
+                        ).count(),
+                        "crimes_total": Incident.objects.filter(
+                            point__contained=bounding_polygon,
+                            date_time__lte=current_end,
+                            date_time__gte=current_start,
+                        ).count(),
+                    })
+
+                    if chart_current_date >= chart_end:
+                        break
+                    chart_current_date = current_end
+
             else:
                 # An interval was not selected so just run the analysis against the total date range
                 active_subdivisions = [stl_process(sset, start_date, end_date, ctid_select)]
